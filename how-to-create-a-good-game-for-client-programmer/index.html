@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xtutu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言前一段时间，我换了一份工作，来到了一家新的公司一个新的项目组。这个项目是一款有IP的卡牌类游戏，客户端所采用的引擎是cocos2dx 2.X的C++版本，所用的UI编辑器是cocosbuilder，通讯协议是http。其实是一款蛮不错的产品，但是整个客户端的架构有很大的问题。所以就想着写这样一篇文章，谈谈自己对于一款游戏产品客户端架构的想法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一款优秀的游戏产品，客户端所需要考虑的一些问题">
+<meta property="og:url" content="http://xtutu.github.io/how-to-create-a-good-game-for-client-programmer/index.html">
+<meta property="og:site_name" content="xtutu">
+<meta property="og:description" content="前言前一段时间，我换了一份工作，来到了一家新的公司一个新的项目组。这个项目是一款有IP的卡牌类游戏，客户端所采用的引擎是cocos2dx 2.X的C++版本，所用的UI编辑器是cocosbuilder，通讯协议是http。其实是一款蛮不错的产品，但是整个客户端的架构有很大的问题。所以就想着写这样一篇文章，谈谈自己对于一款游戏产品客户端架构的想法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-07-19T10:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-24T08:46:04.933Z">
+<meta property="article:author" content="xtutu">
+<meta property="article:tag" content="程序员">
+<meta property="article:tag" content="Client">
+<meta property="article:tag" content="Game">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xtutu.github.io/how-to-create-a-good-game-for-client-programmer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xtutu.github.io/how-to-create-a-good-game-for-client-programmer/","path":"how-to-create-a-good-game-for-client-programmer/","title":"一款优秀的游戏产品，客户端所需要考虑的一些问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>一款优秀的游戏产品，客户端所需要考虑的一些问题 | xtutu</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="xtutu" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">xtutu</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学习|思考|分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E9%A1%B9"><span class="nav-number">2.</span> <span class="nav-text">注意项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%BC%95%E6%93%8E%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">2.1.</span> <span class="nav-text">客户端引擎的选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">开发流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BE%8E%E6%9C%AF%E3%80%81%E4%BB%A3%E7%A0%81%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86"><span class="nav-number">2.3.</span> <span class="nav-text">美术、代码资源管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%AF%AD%E8%A8%80%E7%89%88%E6%9C%AC%E7%9A%84%E8%80%83%E8%99%91"><span class="nav-number">2.4.</span> <span class="nav-text">多语言版本的考虑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B8%E6%88%8F%E4%B8%AD%E5%BC%95%E5%AF%BC%E5%92%8C%E6%88%98%E6%96%97%E6%A8%A1%E5%9D%97%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">2.5.</span> <span class="nav-text">游戏中引导和战斗模块的设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B8%E6%88%8F%E6%9B%B4%E6%96%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">2.6.</span> <span class="nav-text">游戏更新机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96"><span class="nav-number">2.7.</span> <span class="nav-text">图片内存优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.8.</span> <span class="nav-text">传输协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AFUI%E7%9A%84%E9%80%82%E9%85%8D%E9%97%AE%E9%A2%98"><span class="nav-number">2.9.</span> <span class="nav-text">客户端UI的适配问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android%E9%80%82%E9%85%8D"><span class="nav-number">2.10.</span> <span class="nav-text">Android适配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E7%AE%A1%E7%90%86%E3%80%81%E5%BC%B9%E7%AA%97%E7%AE%A1%E7%90%86"><span class="nav-number">2.11.</span> <span class="nav-text">场景管理、弹窗管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E8%A7%A6%E5%8F%91%E6%9C%BA%E5%88%B6"><span class="nav-number">2.12.</span> <span class="nav-text">消息触发机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E7%A7%8D%E8%84%9A%E6%9C%AC%E5%B7%A5%E5%85%B7"><span class="nav-number">2.13.</span> <span class="nav-text">各种脚本工具</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xtutu</p>
+  <div class="site-description" itemprop="description">学习|思考|分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xtutu.github.io/how-to-create-a-good-game-for-client-programmer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xtutu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xtutu">
+      <meta itemprop="description" content="学习|思考|分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="一款优秀的游戏产品，客户端所需要考虑的一些问题 | xtutu">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一款优秀的游戏产品，客户端所需要考虑的一些问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-07-19 18:00:00" itemprop="dateCreated datePublished" datetime="2015-07-19T18:00:00+08:00">2015-07-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-24 16:46:04" itemprop="dateModified" datetime="2023-05-24T16:46:04+08:00">2023-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B0%8F%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">小结</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前一段时间，我换了一份工作，来到了一家新的公司一个新的项目组。这个项目是一款有IP的卡牌类游戏，客户端所采用的引擎是cocos2dx 2.X的C++版本，所用的UI编辑器是cocosbuilder，通讯协议是http。其实是一款蛮不错的产品，但是整个客户端的架构有很大的问题。所以就想着写这样一篇文章，谈谈自己对于一款游戏产品客户端架构的想法。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="注意项"><a href="#注意项" class="headerlink" title="注意项"></a>注意项</h2><p>下面就罗列一些，客户端开发需要注意的地方。有一些是需要在最初始阶段，就需要考虑的。也有一些是可以在开发过程中，慢慢调整优化的。</p>
+<h3 id="客户端引擎的选择"><a href="#客户端引擎的选择" class="headerlink" title="客户端引擎的选择"></a>客户端引擎的选择</h3><p>首先要谈的是引擎的选择，虽然现在游戏引擎已经非常多了，但是实际上在引擎的选择上，并不是特别多。</p>
+<ol>
+<li>Unity3d：3D手游首选</li>
+<li>Cocos2dx-js：2D手游首选（其实Lua也挺好，在C++绑定上更加方便，但是个人比较喜欢JS，而且很多引擎都支持JS作为开发语言）</li>
+<li>Egret、Cocos2dx-js：2D页游首选（Egret有时间没关注了，不知道现在功能如何，之前看了它的功能，其实并不够强大，但是它的配套工具做的不错，我对它的印象还是挺好的，）</li>
+</ol>
+<hr>
+<h3 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h3><p>开发流程关系到整个项目人员的工作安排，如果流程不规范，效率会特别低。比较靠谱的流程大体是下面这个样子：</p>
+<hr>
+<p><strong>策划方案-&gt;美术效果图-&gt;拼UI（最好有专人负责拼界面）-&gt;客户端功能开发</strong><br><em>一般来说服务端会在看到美术效果图之后确定协议，确定完协议之后，客户端就可以开始写协议相关的代码（所以程序基本是在美术效果图之后开始动工，如果策划发现功能不对，只需要在美术效果图这一步进行修改）</em></p>
+<hr>
+<p>还有就是策划方案最好能领先游戏好几个版本。比如：<br>1.0 要做基本养成<br>1.1 要做装备升阶<br>1.2 要做工会系统<br>1.3 要加一个新的杀时间玩法<br>不用特别细，但是一定要领先当前版本，游戏制作人必须清楚的知道要做一个什么样子的游戏。不然需求不明确，美术，程序会反复的修改，耽误效率更影响士气。</p>
+<hr>
+<h3 id="美术、代码资源管理"><a href="#美术、代码资源管理" class="headerlink" title="美术、代码资源管理"></a>美术、代码资源管理</h3><p>游戏用到的美术资源，客户端代码，服务端代码，最好放在不同的仓库下。这样做的原因是：</p>
+<ol>
+<li>可以把每个人的权限区分开，比如美术可能，只需要美术仓库的权限</li>
+<li>不会因为美术资源、策划文档的改动，影响到客户端SVN版本号</li>
+<li>…</li>
+</ol>
+<hr>
+<h3 id="多语言版本的考虑"><a href="#多语言版本的考虑" class="headerlink" title="多语言版本的考虑"></a>多语言版本的考虑</h3><p>现在游戏行业竞争特别激烈，某一题材的游戏，在大陆不火爆，但是可能在东南亚，或者北美就很吃香，所以很多游戏都有语言版本。<br>游戏多语言版本的考虑，会增加非常多的工作量，所以在游戏早期，一定要考虑好。<br><strong>多语言版本中文字方面主要包括：</strong></p>
+<ol>
+<li>代码中的动态文字</li>
+<li>策划表里面的文字</li>
+<li>UI编辑器编辑的文字</li>
+<li>UI中的文字图片。<br>（可能还有其它文字，比如运营活动之类。同时UI布局样式也是需要考虑的）</li>
+</ol>
+<p>这些文字的规范一定要定制好，方便后期替换。大体的规则就是把这些文字最终都导入到一张（或几张）文字表里面，后期通过替换文字表就可以直接出一个新的语言包。这里面文字图片是比较特殊的，但是也可以通过给文字图片加前缀的方式来区分是否要替换。</p>
+<hr>
+<h3 id="游戏中引导和战斗模块的设计"><a href="#游戏中引导和战斗模块的设计" class="headerlink" title="游戏中引导和战斗模块的设计"></a>游戏中引导和战斗模块的设计</h3><p>这两个模块如果一开始设计的不好，那么到后期，前者会变得很难维护，后者变得很难扩展。<br>强制引导部分如果代码出问题，那玩家基本就是直接流失了。<br>而战斗模块，如果一款游戏对战斗要求比较高，那么战斗逻辑的扩展性一定要非常强。（比如策划突然想到一个技能：”灼伤”，效果: 人物攻击时有30%的概率，让敌方进入灼伤状态：每秒扣100血，持续10秒。 程序这边总不能说不支持这种情况，或者说要花很长时间改代码结构）</p>
+<hr>
+<h3 id="游戏更新机制"><a href="#游戏更新机制" class="headerlink" title="游戏更新机制"></a>游戏更新机制</h3><p>这也是重点，现在越来越多的手游采用脚本开发，极大的简化了游戏的更新流程，不再需要重新发布。一般来说游戏会有c++代码、脚本代码、资源文件三个版本号。<br>更新这块有很多细节点，比如：如何判断客户端当前资源是否已经是最新的，就有不少值得注意的地方（当发布了一个新包到appstore，用户通过更新来实现安装的操作，不会清空原有的下载资源）。</p>
+<hr>
+<h3 id="图片内存优化"><a href="#图片内存优化" class="headerlink" title="图片内存优化"></a>图片内存优化</h3><p>游戏内存优化的解决方案，网上已经很多了，这里就不展开说了。</p>
+<hr>
+<h3 id="传输协议"><a href="#传输协议" class="headerlink" title="传输协议"></a>传输协议</h3><p>在http和socket中选通讯方式，我更加倾向于socket。通过socket来传输二进制数据流是非常节省的，估计是用http来传json这种方式的1&#x2F;4~1&#x2F;3。而且socket可以让服务端主动发送消息给客户端，唯一值得注意的，就是断线重连这一块（iPhone退到后台就自动断线了）。</p>
+<hr>
+<h3 id="客户端UI的适配问题"><a href="#客户端UI的适配问题" class="headerlink" title="客户端UI的适配问题"></a>客户端UI的适配问题</h3><p>这是一个很大的问题，不管采用哪种都不是特别完美，所以具体的方案的和美术设计挂钩。</p>
+<h3 id="Android适配"><a href="#Android适配" class="headerlink" title="Android适配"></a>Android适配</h3><p>由于Android机型多种多样，我们的游戏在不同的Android设备上的表现可能各不相同。比较容易出现的大概是以下几点：</p>
+<ol>
+<li>图片导致的问题：一般来说一张图片的大小不要超过1024*1024（模型Android机型的opengl不支持更大的尺寸）</li>
+<li>内存问题</li>
+<li>…</li>
+</ol>
+<hr>
+<h3 id="场景管理、弹窗管理"><a href="#场景管理、弹窗管理" class="headerlink" title="场景管理、弹窗管理"></a>场景管理、弹窗管理</h3><p>我比较推荐将场景、弹窗区分开来，用两个管理器来控制它们的显示和切换。</p>
+<hr>
+<h3 id="消息触发机制"><a href="#消息触发机制" class="headerlink" title="消息触发机制"></a>消息触发机制</h3><p>一个方便的消息触发机制，可以让代码结构更加清晰。一般来说这种消息机制会采用观察者模式，代码实现都是大同小异：   </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">addEvent</span>(eventType, callbcak)</span><br><span class="line"><span class="title function_">trigger</span>(eventType)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="各种脚本工具"><a href="#各种脚本工具" class="headerlink" title="各种脚本工具"></a>各种脚本工具</h3><p>除了导表之类的必备工具，开发过程中还需要许多各式各样脚本工具，来提高开发效率。如：SVN(GIT)更新以及获取版本号、小图打包成大图、文字提取替换等功能，都可以通过一个脚本来实现。比较推荐python来写，原因主要是跨平台、第三方库比较多。</p>
+<blockquote>
+<p>转载本站文章请注明作者和出处 <a href="http://xtutu.github.io/">xtutu</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/" rel="tag"># 程序员</a>
+              <a href="/tags/Client/" rel="tag"># Client</a>
+              <a href="/tags/Game/" rel="tag"># Game</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/coffeescript-javascript-compare/" rel="prev" title="CoffeeScript与JavaScript代码对比">
+                  <i class="fa fa-chevron-left"></i> CoffeeScript与JavaScript代码对比
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/use-task-queue-in-your-program/" rel="next" title="在你的程序中加入任务队列">
+                  在你的程序中加入任务队列 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xtutu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

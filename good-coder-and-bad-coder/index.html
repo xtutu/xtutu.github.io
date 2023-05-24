@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xtutu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="晚上和同事小k一起吃饭回家（小k是公司的一名美术），他在路上问了我这个问题。于是就有了下面的对话。  我：这个问题啊，我得想想怎么才能比较通俗的和你解释。（如果直接说，算法能力、架构能力强，小k肯定是听不懂的） 我：哦，想到了！还记的小学的数学课本上，有一则关于高斯的故事吗？大概就是说“老师布置了一道题目，让大家算出从1加到100是多少” 小k：嗯，有点印象。 我：对于这个问题，普通程序员，可能就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="普通程序员、优秀程序员差距能有多大？！">
+<meta property="og:url" content="http://xtutu.github.io/good-coder-and-bad-coder/index.html">
+<meta property="og:site_name" content="xtutu">
+<meta property="og:description" content="晚上和同事小k一起吃饭回家（小k是公司的一名美术），他在路上问了我这个问题。于是就有了下面的对话。  我：这个问题啊，我得想想怎么才能比较通俗的和你解释。（如果直接说，算法能力、架构能力强，小k肯定是听不懂的） 我：哦，想到了！还记的小学的数学课本上，有一则关于高斯的故事吗？大概就是说“老师布置了一道题目，让大家算出从1加到100是多少” 小k：嗯，有点印象。 我：对于这个问题，普通程序员，可能就">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-04-18T12:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-24T08:46:04.932Z">
+<meta property="article:author" content="xtutu">
+<meta property="article:tag" content="程序员">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xtutu.github.io/good-coder-and-bad-coder/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xtutu.github.io/good-coder-and-bad-coder/","path":"good-coder-and-bad-coder/","title":"普通程序员、优秀程序员差距能有多大？！"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>普通程序员、优秀程序员差距能有多大？！ | xtutu</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="xtutu" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">xtutu</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学习|思考|分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xtutu</p>
+  <div class="site-description" itemprop="description">学习|思考|分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xtutu.github.io/good-coder-and-bad-coder/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xtutu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xtutu">
+      <meta itemprop="description" content="学习|思考|分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="普通程序员、优秀程序员差距能有多大？！ | xtutu">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          普通程序员、优秀程序员差距能有多大？！
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-04-18 20:00:00" itemprop="dateCreated datePublished" datetime="2016-04-18T20:00:00+08:00">2016-04-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-24 16:46:04" itemprop="dateModified" datetime="2023-05-24T16:46:04+08:00">2023-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%95%BF%E7%9F%A5%E8%AF%86/" itemprop="url" rel="index"><span itemprop="name">长知识</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>晚上和同事小k一起吃饭回家（小k是公司的一名美术），他在路上问了我这个问题。<br>于是就有了下面的对话。</p>
+<hr>
+<p><strong>我：这个问题啊，我得想想怎么才能比较通俗的和你解释。（如果直接说，算法能力、架构能力强，小k肯定是听不懂的）</strong></p>
+<p><strong>我：哦，想到了！还记的小学的数学课本上，有一则关于高斯的故事吗？大概就是说“老师布置了一道题目，让大家算出从1加到100是多少”</strong></p>
+<p>小k：嗯，有点印象。</p>
+<p><strong>我：对于这个问题，普通程序员，可能就是一个一个的做加法，需要运算99次。而优秀的程序员会写出（100 + 1） * 100 &#x2F; 2的公式，只要3次运算就搞定了。</strong></p>
+<p>小k有点懵，貌似不怎么理解为什么可以这样算出结果。。。</p>
+<p><strong>于是我继续解释：你可以试着想象一下 “把1+2+…+100写在纸上，然后再在它的下一排，倒过来写100+99+…+1<br>大致就是这样：”</strong></p>
+<blockquote>
+<p>1+2+…+100<br>100+99+…+1</p>
+</blockquote>
+<p><strong>我：可以发现，上下两两相加，就变成了： 101+101+…+101。总共有100个101，因为这样算实际上是做了两次1+…+100，所以我们还需要除以2。</strong></p>
+<p>小k似乎懂了，但是过了一会又说：等一下，为什么都是101，中间的50+50，不是应该是100吗？</p>
+<p><strong>看到小k，问出这样的问题，我只好继续解释：1到100，是偶数个，只有奇数才有中间的那个数字，比如1，2，3。</strong></p>
+<p>小k：哦哦哦，懂了</p>
+<p>至此，终于向小k解释完这个问题。<br><em>如果小k去当程序员的话，应该算不上优秀… :-) 哈哈哈</em></p>
+<span id="more"></span>
+
+
+<blockquote>
+<p>转载本站文章请注明作者(xtutu)和出处 <a href="http://xtutu.github.io/">xtutu</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/" rel="tag"># 程序员</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/client-oriented-test-and-server-oriented-test/" rel="prev" title="面向客户端测试与面向服务端测试">
+                  <i class="fa fa-chevron-left"></i> 面向客户端测试与面向服务端测试
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/run-or-walk-in-rain-day/" rel="next" title="雨天，跑与走哪个淋雨少？模拟一下你就知道">
+                  雨天，跑与走哪个淋雨少？模拟一下你就知道 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xtutu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

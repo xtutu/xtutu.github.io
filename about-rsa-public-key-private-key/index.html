@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xtutu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言作为一名程序员，经常会听到加密解密之类的词。而非对称加密技术，应用的非常广泛。本文不写加密技术的原理，只是希望以一个简单的类比，让大家了解非对称加密中常见词的概念，以及它的作用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于RSA、公钥、私钥、加密、签名的那些概念">
+<meta property="og:url" content="http://xtutu.github.io/about-rsa-public-key-private-key/index.html">
+<meta property="og:site_name" content="xtutu">
+<meta property="og:description" content="前言作为一名程序员，经常会听到加密解密之类的词。而非对称加密技术，应用的非常广泛。本文不写加密技术的原理，只是希望以一个简单的类比，让大家了解非对称加密中常见词的概念，以及它的作用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-01-28T11:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-24T08:46:04.928Z">
+<meta property="article:author" content="xtutu">
+<meta property="article:tag" content="RSA">
+<meta property="article:tag" content="公钥">
+<meta property="article:tag" content="私钥">
+<meta property="article:tag" content="非对称加密">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xtutu.github.io/about-rsa-public-key-private-key/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xtutu.github.io/about-rsa-public-key-private-key/","path":"about-rsa-public-key-private-key/","title":"关于RSA、公钥、私钥、加密、签名的那些概念"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于RSA、公钥、私钥、加密、签名的那些概念 | xtutu</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="xtutu" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">xtutu</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学习|思考|分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E9%92%A5%E5%8A%A0%E5%AF%86%E7%A7%81%E9%92%A5%E8%A7%A3%E5%AF%86"><span class="nav-number">2.1.</span> <span class="nav-text">公钥加密私钥解密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%81%E9%92%A5%E5%8A%A0%E5%AF%86%E5%85%AC%E9%92%A5%E8%A7%A3%E5%AF%86"><span class="nav-number">2.2.</span> <span class="nav-text">私钥加密公钥解密</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xtutu</p>
+  <div class="site-description" itemprop="description">学习|思考|分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xtutu.github.io/about-rsa-public-key-private-key/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xtutu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xtutu">
+      <meta itemprop="description" content="学习|思考|分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于RSA、公钥、私钥、加密、签名的那些概念 | xtutu">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于RSA、公钥、私钥、加密、签名的那些概念
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-01-28 19:00:00" itemprop="dateCreated datePublished" datetime="2016-01-28T19:00:00+08:00">2016-01-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-24 16:46:04" itemprop="dateModified" datetime="2023-05-24T16:46:04+08:00">2023-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%95%BF%E7%9F%A5%E8%AF%86/" itemprop="url" rel="index"><span itemprop="name">长知识</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一名程序员，经常会听到加密解密之类的词。而非对称加密技术，应用的非常广泛。本文不写加密技术的原理，只是希望以一个简单的类比，让大家了解非对称加密中常见词的概念，以及它的作用。</p>
+<span id="more"></span>
+
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在RSA算法中，有两种加密解密的方式：</p>
+<ol>
+<li>公钥加密，私钥解密（加密算法）</li>
+<li>私钥加密，公钥解密（签名认证算法）<br>这两种不同的方式，有不一样的作用。</li>
+</ol>
+<p>我们可以做如下的类比：</p>
+<ol>
+<li>公钥 -&gt; 保险箱</li>
+<li>私钥 -&gt; 保险箱的密码</li>
+</ol>
+<p>这里需要注意的是，一个密码可以打开所有用这个密码的保险箱！！！<br>私钥只有自己知道，而公钥则是公开的。</p>
+<h3 id="公钥加密私钥解密"><a href="#公钥加密私钥解密" class="headerlink" title="公钥加密私钥解密"></a>公钥加密私钥解密</h3><p>这个过程，就是我们把东西放到保险箱里面，只有拥有密码的人，才能打开保险箱，知道里面到底是什么东西。<br>信息传递是从公钥这边传给私钥。因为别人没有私钥，就无法解密具体的信息是什么。</p>
+<h3 id="私钥加密公钥解密"><a href="#私钥加密公钥解密" class="headerlink" title="私钥加密公钥解密"></a>私钥加密公钥解密</h3><p>这种加密方式主要用于身份认证，用于确定你是不是这个保险箱的主人。<br>比较常见的就是，我们在Github中的添加SSH公钥这一行为。<br>我们把公钥告诉Github，然后通过私钥去访问，发现可以打开这个保险箱，所以就能确定我具有这个Github仓库的访问权限。<br>信息传递是从私钥这边传给公钥。</p>
+<blockquote>
+<p>转载本站文章请注明作者(xtutu)和出处 <a href="http://xtutu.github.io/">xtutu</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/RSA/" rel="tag"># RSA</a>
+              <a href="/tags/%E5%85%AC%E9%92%A5/" rel="tag"># 公钥</a>
+              <a href="/tags/%E7%A7%81%E9%92%A5/" rel="tag"># 私钥</a>
+              <a href="/tags/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" rel="tag"># 非对称加密</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/nodejs-require-module-exports/" rel="prev" title="NodeJS中require，module，exports的关系">
+                  <i class="fa fa-chevron-left"></i> NodeJS中require，module，exports的关系
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/about-promise/" rel="next" title="Promise又一个异步编程解决方案！">
+                  Promise又一个异步编程解决方案！ <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xtutu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xtutu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言最近在做服务端，项目是用CoffeeScript（一下简称CS）来写的，不由感慨，JS大法好。（数据库用的是mongodb…也是js系）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CoffeeScript与JavaScript代码对比">
+<meta property="og:url" content="http://xtutu.github.io/coffeescript-javascript-compare/index.html">
+<meta property="og:site_name" content="xtutu">
+<meta property="og:description" content="前言最近在做服务端，项目是用CoffeeScript（一下简称CS）来写的，不由感慨，JS大法好。（数据库用的是mongodb…也是js系）">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-06-21T10:28:14.000Z">
+<meta property="article:modified_time" content="2023-05-24T08:46:04.930Z">
+<meta property="article:author" content="xtutu">
+<meta property="article:tag" content="CoffeeScript">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="区别">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xtutu.github.io/coffeescript-javascript-compare/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xtutu.github.io/coffeescript-javascript-compare/","path":"coffeescript-javascript-compare/","title":"CoffeeScript与JavaScript代码对比"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CoffeeScript与JavaScript代码对比 | xtutu</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="xtutu" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">xtutu</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学习|思考|分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%8D%B0%E8%B1%A1"><span class="nav-number">2.</span> <span class="nav-text">第一印象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E4%B8%80%E4%BA%9B%E4%BE%8B%E5%AD%90%E5%90%A7"><span class="nav-number">3.</span> <span class="nav-text">写一些例子吧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#do-while-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">do while 实现方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%86%E8%8A%82"><span class="nav-number">4.</span> <span class="nav-text">细节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9D%91%EF%BC%8C%E7%BB%9D%E5%AF%B9%E7%9A%84%E5%9D%91%EF%BC%81"><span class="nav-number">5.</span> <span class="nav-text">坑，绝对的坑！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xtutu</p>
+  <div class="site-description" itemprop="description">学习|思考|分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xtutu.github.io/coffeescript-javascript-compare/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xtutu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xtutu">
+      <meta itemprop="description" content="学习|思考|分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CoffeeScript与JavaScript代码对比 | xtutu">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CoffeeScript与JavaScript代码对比
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-06-21 18:28:14" itemprop="dateCreated datePublished" datetime="2015-06-21T18:28:14+08:00">2015-06-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-24 16:46:04" itemprop="dateModified" datetime="2023-05-24T16:46:04+08:00">2023-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在做服务端，项目是用CoffeeScript（一下简称CS）来写的，不由感慨，JS大法好。（数据库用的是mongodb…也是js系）</p>
+<span id="more"></span>
+<h2 id="第一印象"><a href="#第一印象" class="headerlink" title="第一印象"></a>第一印象</h2><p>CS提供了一个官网：<a target="_blank" rel="noopener" href="http://coffee-script.org/">http://coffee-script.org</a>。官网的教程非常不错，很多知识点都讲得非常细，而且篇幅也不多。但是看里面的一些CS代码之后，发现对于刚刚接触CS的人来说，CS代码是居然如此难以阅读！！！我并不推荐为了少敲几下键盘，牺牲了代码的可读性。毕竟现在的IDE，已经有非常智能的补功能了。</p>
+<p><strong>不过实际操作下来，发现的确是可以少敲很多代码。 - -！</strong></p>
+<p>下面例举一些CS吊炸天的语法</p>
+<ol>
+<li>循环递推<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">foods = [<span class="string">&#x27;broccoli&#x27;</span>, <span class="string">&#x27;spinach&#x27;</span>, <span class="string">&#x27;chocolate&#x27;</span>]</span><br><span class="line">eatTime = <span class="literal">true</span></span><br><span class="line">alert food <span class="keyword">for</span> food <span class="keyword">in</span> foods when food isnt <span class="string">&#x27;chocolate&#x27;</span> <span class="keyword">if</span> eatTime</span><br><span class="line">###</span><br><span class="line">这表达式，简直逆天了 </span><br><span class="line"><span class="keyword">if</span> (eatTime) &#123;</span><br><span class="line">  <span class="keyword">for</span> (_i = <span class="number">0</span>, _len = foods.<span class="property">length</span>; _i &lt; _len; _i++) &#123;</span><br><span class="line">    food = foods[_i];</span><br><span class="line">    <span class="keyword">if</span> (food !== <span class="string">&#x27;chocolate&#x27;</span>) &#123;</span><br><span class="line">      <span class="title function_">alert</span>(food);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">###</span><br></pre></td></tr></table></figure></li>
+<li>？符号<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">solipsism = <span class="literal">true</span> <span class="keyword">if</span> mind? and not world? and flag</span><br><span class="line">###</span><br><span class="line">翻译过来就是这样...太绕了。</span><br><span class="line"><span class="keyword">if</span> ((<span class="keyword">typeof</span> mind !== <span class="string">&quot;undefined&quot;</span> &amp;&amp; mind !== <span class="literal">null</span>) &amp;&amp; (<span class="keyword">typeof</span> world === <span class="string">&quot;undefined&quot;</span> || world === <span class="literal">null</span>) &amp;&amp; flag) &#123;</span><br><span class="line">  solipsism = <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line">###</span><br></pre></td></tr></table></figure></li>
+<li>遍历操作</li>
+</ol>
+<ul>
+<li>遍历数组：<br>for item , idx in arr   # idx from 0</li>
+<li>遍历对象属性<br>for key , value of object</li>
+</ul>
+<ol start="4">
+<li>几乎所有的东西，都是表达式，这个很重要<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">max = <span class="keyword">if</span> <span class="number">3</span> &lt; <span class="number">3</span> then <span class="number">3</span> <span class="keyword">else</span> <span class="number">2</span></span><br><span class="line"># max = <span class="number">3</span> &lt; <span class="number">3</span> ? <span class="number">3</span> : <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">idx = <span class="number">3</span></span><br><span class="line">x = <span class="keyword">while</span> idx--</span><br><span class="line"> <span class="string">&quot;#&#123;idx&#125;&quot;</span></span><br><span class="line"><span class="title function_">alert</span>(x)</span><br><span class="line">## 输出 <span class="number">2</span>， <span class="number">1</span>， <span class="number">0</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="写一些例子吧"><a href="#写一些例子吧" class="headerlink" title="写一些例子吧"></a>写一些例子吧</h2><ol>
+<li><p>原型上增加方法<br>CS代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Stu</span></span><br><span class="line">  name : <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attr">constructor</span>: (@name) -&gt;</span><br><span class="line">  setName : (@name) -&gt;</span><br><span class="line">  setAge : (_age) -&gt;\</span><br><span class="line">  @age = _age</span><br><span class="line"><span class="title class_">Stu</span>.<span class="property">x</span> = <span class="number">1</span>   # 也就是<span class="title class_">TypeScript</span>中的静态属性</span><br><span class="line"><span class="title class_">Stu</span>::getName = -&gt; @name  # 原型方法，也就是<span class="title class_">TypeScript</span>中的成员方法</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>继承</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Father</span></span><br><span class="line">  name : <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attr">constructor</span>: (@name) -&gt; <span class="title function_">alert</span>(<span class="string">&quot;Father&quot;</span>)</span><br><span class="line">  showName : -&gt; <span class="title function_">alert</span>(<span class="string">&quot;showName #&#123;@name&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Son</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Father</span></span><br><span class="line">### </span><br><span class="line">如果子类不写构造方法，则会调用父类的构造方法</span><br><span class="line">如果子类写了，则不会调用父类方法，除非显示调用。(其他方法的调用方式和这个一致)</span><br><span class="line">###</span><br><span class="line">   constructor :(_name) -&gt; </span><br><span class="line">      <span class="variable language_">super</span>(<span class="string">&quot;father name&quot;</span>)</span><br><span class="line">      <span class="title function_">alert</span>(<span class="string">&quot;Son&quot;</span>)</span><br><span class="line">      @name = _name</span><br><span class="line"></span><br><span class="line">sonInstance = <span class="keyword">new</span> <span class="title class_">Son</span>(<span class="string">&quot;son name&quot;</span>)</span><br><span class="line">sonInstance.<span class="title function_">showName</span>()</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="do-while-实现方式"><a href="#do-while-实现方式" class="headerlink" title="do while 实现方式"></a>do while 实现方式</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">isOk = <span class="literal">false</span></span><br><span class="line">loop</span><br><span class="line">    isOk = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">break</span> <span class="keyword">if</span> isOk</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h2><ol>
+<li><p>数组</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">数组(<span class="number">3.</span><span class="number">.6</span>),会包含最后一个数据</span><br><span class="line">通过三个点号的写法(<span class="number">3.</span>.<span class="number">.6</span>),不会包含最后一个数据 </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>switch语句</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> day</span><br><span class="line">    when <span class="string">&quot;x&quot;</span> then <span class="string">&quot;xxx&quot;</span></span><br><span class="line">    when <span class="string">&quot;y&quot;</span> then <span class="string">&quot;y&quot;</span></span><br><span class="line">    when <span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span> then <span class="string">&quot;ab&quot;</span></span><br><span class="line">    <span class="keyword">else</span> <span class="string">&quot;default&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>函数多返回值</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">weatherReport = (location) -&gt;</span><br><span class="line">  # 发起一个 <span class="title class_">Ajax</span> 请求获取天气...</span><br><span class="line">  [location, <span class="number">72</span>, <span class="string">&quot;Mostly Sunny&quot;</span>]</span><br><span class="line">[city, temp, forecast] = weatherReport <span class="string">&quot;Berkeley, CA&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>还有这个</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">healthy = <span class="number">200</span> &gt; cholesterol &gt; <span class="number">60</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>操作符</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">is  ===</span><br><span class="line">isnt    !==</span><br><span class="line">not !</span><br><span class="line">and &amp;&amp;</span><br><span class="line">or  ||</span><br><span class="line"><span class="literal">true</span>, yes, on   <span class="literal">true</span></span><br><span class="line"><span class="literal">false</span>, no, off  <span class="literal">false</span></span><br><span class="line">@, <span class="variable language_">this</span> <span class="variable language_">this</span></span><br><span class="line"><span class="keyword">of</span>  <span class="keyword">in</span></span><br><span class="line"><span class="keyword">in</span>  no <span class="variable constant_">JS</span> equivalent</span><br><span class="line">a ** b  <span class="title class_">Math</span>.<span class="title function_">pow</span>(a, b)</span><br><span class="line">a <span class="comment">// b  Math.floor(a / b)</span></span><br><span class="line">a %% b  (a % b + b) % b</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="坑，绝对的坑！"><a href="#坑，绝对的坑！" class="headerlink" title="坑，绝对的坑！"></a>坑，绝对的坑！</h2><p>因为coffee是靠缩进来解析代码的，这导致即使是一个空格也会产生BUG。<br>比如下面这个问题，当时查了好半天。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">idx= count * (page - <span class="number">1</span>) -<span class="number">1</span></span><br><span class="line">### 这句话会被解析为</span><br><span class="line">idx = count * (page - <span class="number">1</span>)(-<span class="number">1</span>);</span><br><span class="line">(page - <span class="number">1</span>)被解析为函数了</span><br><span class="line">只要把<span class="string">&quot;-1&quot;</span>改成<span class="string">&quot;- 1&quot;</span>就好了</span><br><span class="line">###</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>看完官方的整个教程，其实可以发现，CoffeeScript和TypeScript是两种不同类型的JS语法变种，后者更倾向于把JS变为Java之类的语言，而本篇的CS，则是为了让JS代码，变得更加精简，但这也导致代码的可读性降低了不少（虽然熟悉了之后，这种情况可以减轻不少，但是我还是不怎么推荐）。</p>
+<blockquote>
+<p>转载本站文章请注明作者(xtutu)和出处 <a href="http://xtutu.github.io/">xtutu</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CoffeeScript/" rel="tag"># CoffeeScript</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/%E5%8C%BA%E5%88%AB/" rel="tag"># 区别</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/add-lua-support-for-cplusplus-project/" rel="prev" title="C++项目中添加调用Lua脚本">
+                  <i class="fa fa-chevron-left"></i> C++项目中添加调用Lua脚本
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/how-to-create-a-good-game-for-client-programmer/" rel="next" title="一款优秀的游戏产品，客户端所需要考虑的一些问题">
+                  一款优秀的游戏产品，客户端所需要考虑的一些问题 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xtutu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

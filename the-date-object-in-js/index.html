@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xtutu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言最近在写一个功能的时候，需要把本地时间0点的时间戳存下来。因为一直就没怎么去研究UTC、GMT、本地时间（中国算是东八区）的关系，所以乘着要写这个功能，就把这几个概念理了一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript中的Date对象，以及UTC、GMT、时区的关系">
+<meta property="og:url" content="http://xtutu.github.io/the-date-object-in-js/index.html">
+<meta property="og:site_name" content="xtutu">
+<meta property="og:description" content="前言最近在写一个功能的时候，需要把本地时间0点的时间戳存下来。因为一直就没怎么去研究UTC、GMT、本地时间（中国算是东八区）的关系，所以乘着要写这个功能，就把这几个概念理了一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-10-01T10:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-24T08:46:04.935Z">
+<meta property="article:author" content="xtutu">
+<meta property="article:tag" content="Date">
+<meta property="article:tag" content="UTC">
+<meta property="article:tag" content="GMT">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xtutu.github.io/the-date-object-in-js/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xtutu.github.io/the-date-object-in-js/","path":"the-date-object-in-js/","title":"JavaScript中的Date对象，以及UTC、GMT、时区的关系"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaScript中的Date对象，以及UTC、GMT、时区的关系 | xtutu</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="xtutu" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">xtutu</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学习|思考|分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UTC%E4%B8%8EGMT%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">2.</span> <span class="nav-text">UTC与GMT的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JS%E4%B8%ADDate%E5%AF%B9%E8%B1%A1%E4%B8%BB%E8%A6%81%E6%96%B9%E6%B3%95%E6%89%80%E7%94%A8%E7%9A%84%E5%8F%82%E6%95%B0%EF%BC%8C%E4%BB%A5%E5%8F%8A%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">JS中Date对象主要方法所用的参数，以及返回类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5"><span class="nav-number">5.</span> <span class="nav-text">更进一步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E5%AD%98%E6%9C%AC%E5%9C%B00%E7%82%B9%E6%97%B6%E9%97%B4"><span class="nav-number">5.1.</span> <span class="nav-text">如果存本地0点时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E5%AD%98%E5%9B%BD%E9%99%85%E6%A0%87%E5%87%860%E7%82%B9%E6%97%B6%E9%97%B4"><span class="nav-number">5.2.</span> <span class="nav-text">如果存国际标准0点时间</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xtutu</p>
+  <div class="site-description" itemprop="description">学习|思考|分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xtutu.github.io/the-date-object-in-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xtutu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xtutu">
+      <meta itemprop="description" content="学习|思考|分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaScript中的Date对象，以及UTC、GMT、时区的关系 | xtutu">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript中的Date对象，以及UTC、GMT、时区的关系
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-10-01 18:00:00" itemprop="dateCreated datePublished" datetime="2015-10-01T18:00:00+08:00">2015-10-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-24 16:46:04" itemprop="dateModified" datetime="2023-05-24T16:46:04+08:00">2023-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在写一个功能的时候，需要把本地时间0点的时间戳存下来。因为一直就没怎么去研究UTC、GMT、本地时间（中国算是东八区）的关系，所以乘着要写这个功能，就把这几个概念理了一下。</p>
+<span id="more"></span>
+<h2 id="UTC与GMT的关系"><a href="#UTC与GMT的关系" class="headerlink" title="UTC与GMT的关系"></a>UTC与GMT的关系</h2><p>UTC和GMT实际上可以理解为同一东西，具体的关系如下。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable constant_">UTC</span> = <span class="variable constant_">GMT</span> +/- <span class="number">0.9</span> s</span><br></pre></td></tr></table></figure>
+<p>我们国家的时间实际是UTC+8，也就是说当国际标准时间为1号早上8点的时候，我们的本地时间是1号的16点。<br>即：东八区比标准时间快8小时。</p>
+<h2 id="JS中Date对象主要方法所用的参数，以及返回类型"><a href="#JS中Date对象主要方法所用的参数，以及返回类型" class="headerlink" title="JS中Date对象主要方法所用的参数，以及返回类型"></a>JS中Date对象主要方法所用的参数，以及返回类型</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 该方法传递的是国际标准时间</span></span><br><span class="line">now = <span class="keyword">new</span> <span class="title class_">Date</span>(int) </span><br><span class="line"></span><br><span class="line"><span class="comment">// 该方法返回的也是国际标准时间戳</span></span><br><span class="line"><span class="title function_">getTime</span>()	返回 国际时间 <span class="number">1970</span> 年 <span class="number">1</span> 月 <span class="number">1</span> 日 <span class="number">0</span>点至今的毫秒数。（也就是我们东八区的<span class="number">1970</span> 年 <span class="number">1</span> 月 <span class="number">1</span> 日 <span class="number">8</span>点至今的毫秒数）</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下方法返回的是本地时间</span></span><br><span class="line"><span class="title function_">getDate</span>()	从 <span class="title class_">Date</span> 对象返回一个月中的某一天 (<span class="number">1</span> ~ <span class="number">31</span>)。本地时间</span><br><span class="line"><span class="title function_">getDay</span>()	从 <span class="title class_">Date</span> 对象返回一周中的某一天 (<span class="number">0</span> ~ <span class="number">6</span>)。本地时间</span><br><span class="line"><span class="title function_">getMonth</span>()	从 <span class="title class_">Date</span> 对象返回月份 (<span class="number">0</span> ~ <span class="number">11</span>)。本地时间</span><br><span class="line"><span class="title function_">getFullYear</span>()	从 <span class="title class_">Date</span> 对象以四位数字返回年份。本地时间</span><br><span class="line"><span class="title function_">getYear</span>()	请使用 <span class="title function_">getFullYear</span>() 方法代替。本地时间</span><br><span class="line"><span class="title function_">getHours</span>()	返回 <span class="title class_">Date</span> 对象的小时 (<span class="number">0</span> ~ <span class="number">23</span>)。本地时间</span><br><span class="line"><span class="title function_">getMinutes</span>()	返回 <span class="title class_">Date</span> 对象的分钟 (<span class="number">0</span> ~ <span class="number">59</span>)。本地时间</span><br><span class="line"><span class="title function_">getSeconds</span>()	返回 <span class="title class_">Date</span> 对象的秒数 (<span class="number">0</span> ~ <span class="number">59</span>)。本地时间</span><br><span class="line"><span class="title function_">getMilliseconds</span>() 返回 <span class="title class_">Date</span> 对象的毫秒(<span class="number">0</span> ~ <span class="number">999</span>)。本地时间</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下方法返回的是国际标准时间</span></span><br><span class="line"><span class="title function_">getUTCDate</span>()	根据世界时从 <span class="title class_">Date</span> 对象返回月中的一天 (<span class="number">1</span> ~ <span class="number">31</span>)。国际标准时间</span><br><span class="line"><span class="title function_">getUTCDay</span>()	根据世界时从 <span class="title class_">Date</span> 对象返回周中的一天 (<span class="number">0</span> ~ <span class="number">6</span>)。国际标准时间</span><br><span class="line"><span class="title function_">getUTCMonth</span>()	根据世界时从 <span class="title class_">Date</span> 对象返回月份 (<span class="number">0</span> ~ <span class="number">11</span>)。国际标准时间</span><br><span class="line"><span class="title function_">getUTCFullYear</span>()	根据世界时从 <span class="title class_">Date</span> 对象返回四位数的年份。国际标准时间</span><br><span class="line"><span class="title function_">getUTCHours</span>()	根据世界时返回 <span class="title class_">Date</span> 对象的小时 (<span class="number">0</span> ~ <span class="number">23</span>)。国际标准时间</span><br><span class="line"><span class="title function_">getUTCMinutes</span>()	根据世界时返回 <span class="title class_">Date</span> 对象的分钟 (<span class="number">0</span> ~ <span class="number">59</span>)。国际标准时间</span><br><span class="line"><span class="title function_">getUTCSeconds</span>()	根据世界时返回 <span class="title class_">Date</span> 对象的秒钟 (<span class="number">0</span> ~ <span class="number">59</span>)。国际标准时间</span><br><span class="line"><span class="title function_">getUTCMilliseconds</span>() 根据世界时返回 <span class="title class_">Date</span> 对象的毫秒(<span class="number">0</span> ~ <span class="number">999</span>)。国际标准时间</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下两个方法返回本地时间的字符串</span></span><br><span class="line"><span class="title function_">toLocaleString</span>()</span><br><span class="line"><span class="title function_">toString</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回国际标准时间的字符串</span></span><br><span class="line"><span class="title function_">toUTCString</span>()</span><br></pre></td></tr></table></figure>
+<p>从上面的api中可以看到Date中的，getTime方比较特殊，它虽然没有加UTC这个标识，但是实际上返回的却是UTC的时间戳，估计主要是为了和构造方法对应起来。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>理清这些概念之后，实现起来就比较清晰了。最后附上获取本地当天0点时间的国际标准时间戳（有点绕口…）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exports</span>.<span class="property">getZeroTime</span> =()-&gt;</span><br><span class="line">  now = <span class="keyword">new</span> <span class="title class_">Date</span>()</span><br><span class="line">  now.<span class="title function_">setHours</span>(<span class="number">0</span>);now.<span class="title function_">setMinutes</span>(<span class="number">0</span>); now.<span class="title function_">setSeconds</span>(<span class="number">0</span>); now.<span class="title function_">setMilliseconds</span>(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> now.<span class="title function_">getTime</span>()</span><br></pre></td></tr></table></figure>
+
+<h2 id="更进一步"><a href="#更进一步" class="headerlink" title="更进一步"></a>更进一步</h2><p>在本文开头提到了需要把本地时间0点的时间戳存下来。那么如果现在要做一个功能，是记录全球所有用户每天的体温变化。那么是存各地区本地的0点时间的时间戳方便，还是存国际标准0点时间的时间戳方便呢？<br><strong>(存数据库里面的时间戳都是国际时间 1970 年 1 月 1 日 0点至今的毫秒数</strong>)。<br><strong>以下内容没有具体实验，纯理论分析，如果有问题，请给我留言;-)</strong></p>
+<h3 id="如果存本地0点时间"><a href="#如果存本地0点时间" class="headerlink" title="如果存本地0点时间"></a>如果存本地0点时间</h3><blockquote>
+<p> 因为存的是本地时间，所以每个地区的时间数据都是不统一的。以本地时间10月24号为例，西时区：存的就是10月24号国际标准时间戳+0<del>12小时；东时区存的就是10月24号国际标准时间戳-（0</del>12）小时，也就是10月23号的国际标准时间戳+（12~24）小时。</p>
+</blockquote>
+<ol>
+<li>**查询全球所有用户国际标准时间（比如说是10月24号）的数据 **<br>查询条件为10月24号0点国际标准时间+&#x2F;-12小时内。 其中西时区为+0<del>12，东时区为-12</del>0</li>
+<li><strong>查询全球所有用户本地时间（比如说是10月24号）的数据</strong><br>查询条件为10月24号0点国际标准时间+24小时内。其中西时区为+0<del>12，东时区为12</del>24</li>
+</ol>
+<h3 id="如果存国际标准0点时间"><a href="#如果存国际标准0点时间" class="headerlink" title="如果存国际标准0点时间"></a>如果存国际标准0点时间</h3><blockquote>
+<p> 以本地时间10月24号为例，不管是西时区还是东时区存的都是10月24号国际标准时间戳。</p>
+</blockquote>
+<ol>
+<li><strong>查询全球所有用户国际标准时间（比如说是10月24号）的数据</strong><br>直接查就是了，没有什么问题</li>
+<li><strong>查询全球所有用户本地时间（比如说是10月24号）的数据</strong><br>查询条件为10月24号0点国际标准时间+&#x2F;-12小时内。 其中西时区为+0<del>12，东时区为-12</del>0</li>
+</ol>
+<hr>
+<p>最后结合项目的实际需求，就可以选择最合适的存储格式了。</p>
+<hr>
+<p><strong>更新2016-4-10</strong><br>最近很火的手游《皇室战争》，采用的就是<strong>国际标准0点时间</strong>作为一天的开始。<br>具体表现为：<strong>中国区部落的捐赠数量会在每个星期一的早上8点清零！</strong></p>
+<blockquote>
+<p>转载本站文章请注明作者(xtutu)和出处 <a href="http://xtutu.github.io/">xtutu</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Date/" rel="tag"># Date</a>
+              <a href="/tags/UTC/" rel="tag"># UTC</a>
+              <a href="/tags/GMT/" rel="tag"># GMT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/use-task-queue-in-your-program/" rel="prev" title="在你的程序中加入任务队列">
+                  <i class="fa fa-chevron-left"></i> 在你的程序中加入任务队列
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/think-about-server/" rel="next" title="服务端架构的一些思考">
+                  服务端架构的一些思考 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xtutu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

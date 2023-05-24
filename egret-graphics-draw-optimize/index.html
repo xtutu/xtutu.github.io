@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xtutu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言在看了一些Egret的源码之后，就决定动手写一个画图Demo。但是在写的过程中，发现：每当画的矢量图有点多的时候，绘制的帧数马上就降下来了，很快就卡的不行了。。。于是断点查看了下，发现是因为Egret在用graphics绘制的时候，它会把所有的点都储存下来。等到下一帧的时候就重新绘制一遍。可以想想，当绘制的点有上万个，甚至更多的时候，这样重新绘制是很不合理的！所以必须得想办法优化下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Egret Graphics 矢量绘图优化">
+<meta property="og:url" content="http://xtutu.github.io/egret-graphics-draw-optimize/index.html">
+<meta property="og:site_name" content="xtutu">
+<meta property="og:description" content="前言在看了一些Egret的源码之后，就决定动手写一个画图Demo。但是在写的过程中，发现：每当画的矢量图有点多的时候，绘制的帧数马上就降下来了，很快就卡的不行了。。。于是断点查看了下，发现是因为Egret在用graphics绘制的时候，它会把所有的点都储存下来。等到下一帧的时候就重新绘制一遍。可以想想，当绘制的点有上万个，甚至更多的时候，这样重新绘制是很不合理的！所以必须得想办法优化下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-04-05T10:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-24T08:46:04.930Z">
+<meta property="article:author" content="xtutu">
+<meta property="article:tag" content="Render">
+<meta property="article:tag" content="Draw">
+<meta property="article:tag" content="Texture">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xtutu.github.io/egret-graphics-draw-optimize/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xtutu.github.io/egret-graphics-draw-optimize/","path":"egret-graphics-draw-optimize/","title":"Egret Graphics 矢量绘图优化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Egret Graphics 矢量绘图优化 | xtutu</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="xtutu" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">xtutu</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学习|思考|分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">实现思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF%E6%AF%94%E8%BE%83%E7%AE%80%E5%8D%95%EF%BC%8C%E5%B0%B1%E6%98%AF%E5%B0%86graphics%E4%B8%AD%E7%9A%84%E9%A1%B6%E7%82%B9%E6%95%B0%E6%8D%AE%E6%B8%B2%E6%9F%93%E5%88%B0%E4%B8%80%E4%B8%AA%E7%BA%B9%E7%90%86%E4%B8%8A%E9%9D%A2%E3%80%82Egret%E5%BC%95%E6%93%8E%E4%B8%AD%E6%8F%90%E4%BE%9B%E4%BA%86%E4%B8%80%E4%B8%AA%E7%B1%BBRenderTexture%EF%BC%8C%E9%80%9A%E8%BF%87%E8%BF%99%E4%B8%AA%E7%B1%BB%EF%BC%8C%E5%8F%AF%E4%BB%A5%E9%9D%9E%E5%B8%B8%E6%96%B9%E4%BE%BF%E7%9A%84%E5%AE%9E%E7%8E%B0%E8%BF%99%E4%B8%80%E5%8A%9F%E8%83%BD%E3%80%82%E5%85%B3%E9%94%AE%E4%BB%A3%E7%A0%81%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">实现思路比较简单，就是将graphics中的顶点数据渲染到一个纹理上面。Egret引擎中提供了一个类RenderTexture，通过这个类，可以非常方便的实现这一功能。关键代码如下：12345678910111213141516171819202122class DrawNode extends egret.Sprite{    &#x2F;&#x2F; 通过Shape的graphics进行画矢量图    m_shp:egret.Shape &#x3D; null;    &#x2F;&#x2F; 绘制的内容，最终就是渲染到它的texture上    m_bitmap:egret.Bitmap &#x3D; null;    refreshToBitmap(){        var renderTexture &#x3D; new egret.RenderTexture();        &#x2F;&#x2F; this为整个画布节点        renderTexture.textureWidth &#x3D; this.width;        renderTexture.textureHeight &#x3D; this.height        var oldAnchorX &#x3D; this.anchorX        var oldAnchorY &#x3D; this.anchorY        this.anchorX &#x3D; 0;        this.anchorY &#x3D; 0        renderTexture.drawToTexture(this, new egret.Rectangle(0, 0 , this.width, this.height));               this.m_bitmap.texture &#x3D; renderTexture;        this.anchorX &#x3D; oldAnchorX        this.anchorY &#x3D; oldAnchorY    }}</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA"><span class="nav-number">4.</span> <span class="nav-text">最终效果演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-number">5.</span> <span class="nav-text">后记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80"><span class="nav-number">6.</span> <span class="nav-text">项目地址</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xtutu</p>
+  <div class="site-description" itemprop="description">学习|思考|分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xtutu.github.io/egret-graphics-draw-optimize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xtutu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xtutu">
+      <meta itemprop="description" content="学习|思考|分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Egret Graphics 矢量绘图优化 | xtutu">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Egret Graphics 矢量绘图优化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2015-04-05 18:00:00" itemprop="dateCreated datePublished" datetime="2015-04-05T18:00:00+08:00">2015-04-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-24 16:46:04" itemprop="dateModified" datetime="2023-05-24T16:46:04+08:00">2023-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Egret/" itemprop="url" rel="index"><span itemprop="name">Egret</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在看了一些Egret的源码之后，就决定动手写一个画图Demo。但是在写的过程中，发现：每当画的矢量图有点多的时候，绘制的帧数马上就降下来了，很快就卡的不行了。。。<br>于是断点查看了下，发现是因为Egret在用graphics绘制的时候，它会把所有的点都储存下来。等到下一帧的时候就重新绘制一遍。<br>可以想想，当绘制的点有上万个，甚至更多的时候，这样重新绘制是很不合理的！<br>所以必须得想办法优化下。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><h2 id="实现思路比较简单，就是将graphics中的顶点数据渲染到一个纹理上面。Egret引擎中提供了一个类RenderTexture，通过这个类，可以非常方便的实现这一功能。关键代码如下："><a href="#实现思路比较简单，就是将graphics中的顶点数据渲染到一个纹理上面。Egret引擎中提供了一个类RenderTexture，通过这个类，可以非常方便的实现这一功能。关键代码如下：" class="headerlink" title="实现思路比较简单，就是将graphics中的顶点数据渲染到一个纹理上面。Egret引擎中提供了一个类RenderTexture，通过这个类，可以非常方便的实现这一功能。关键代码如下："></a>实现思路比较简单，就是将graphics中的顶点数据渲染到一个纹理上面。<br>Egret引擎中提供了一个类<strong>RenderTexture</strong>，通过这个类，可以非常方便的实现这一功能。<br>关键代码如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DrawNode</span> <span class="keyword">extends</span> <span class="title class_ inherited__">egret.Sprite</span>&#123;</span><br><span class="line">    <span class="comment">// 通过Shape的graphics进行画矢量图</span></span><br><span class="line">    <span class="attr">m_shp</span>:egret.<span class="property">Shape</span> = <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 绘制的内容，最终就是渲染到它的texture上</span></span><br><span class="line">    <span class="attr">m_bitmap</span>:egret.<span class="property">Bitmap</span> = <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">refreshToBitmap</span>(<span class="params"></span>)&#123;</span><br><span class="line">        <span class="keyword">var</span> renderTexture = <span class="keyword">new</span> egret.<span class="title class_">RenderTexture</span>();</span><br><span class="line">        <span class="comment">// this为整个画布节点</span></span><br><span class="line">        renderTexture.<span class="property">textureWidth</span> = <span class="variable language_">this</span>.<span class="property">width</span>;</span><br><span class="line">        renderTexture.<span class="property">textureHeight</span> = <span class="variable language_">this</span>.<span class="property">height</span></span><br><span class="line">        <span class="keyword">var</span> oldAnchorX = <span class="variable language_">this</span>.<span class="property">anchorX</span></span><br><span class="line">        <span class="keyword">var</span> oldAnchorY = <span class="variable language_">this</span>.<span class="property">anchorY</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">anchorX</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">anchorY</span> = <span class="number">0</span></span><br><span class="line">        renderTexture.<span class="title function_">drawToTexture</span>(<span class="variable language_">this</span>, <span class="keyword">new</span> egret.<span class="title class_">Rectangle</span>(<span class="number">0</span>, <span class="number">0</span> , <span class="variable language_">this</span>.<span class="property">width</span>, <span class="variable language_">this</span>.<span class="property">height</span>));</span><br><span class="line">       </span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">m_bitmap</span>.<span class="property">texture</span> = renderTexture;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">anchorX</span> = oldAnchorX</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">anchorY</span> = oldAnchorY</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></h2><blockquote>
+<p>ps: 至于渲染到纹理上的具体时机，可以根据实际的性能表现来确定。比如：每次有新绘制的内容就进行渲染，也可以当新绘制的顶点数达到某一个阀值的时候，再进行渲染到纹理的操作。</p>
+</blockquote>
+<hr>
+<h2 id="最终效果演示"><a href="#最终效果演示" class="headerlink" title="最终效果演示"></a>最终效果演示</h2>
+    <iframe src="/game/index.html?type=draw" width="640" height="430" id="demoFrame">
+        <a href="/game/index.html?type=draw">你的浏览器不支持iframe页面嵌套，请点击这里访问页面内容。</a>
+    </iframe>
+
+<p>点击画图测试按钮，即可看到效果。<br><a href="/game/index.html?type=draw">全屏地址</a></p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>这两天把引擎升到了2.5.0版本，很多接口都不能用了（原先的是1.6版本）。所以把这个Demo也更新了下。<br>这个版本的引擎已经做了不少渲染方面的优化了，但是脏矩形刷新的时候，会闪屏。而且2.5.0的RenderTexture还有问题。。。升级到2.5.3就修复了（不过用起来，还是感觉不大对？触摸位置，以及渲染的位置都有问题！懒得去看源码了）</p>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><p><a target="_blank" rel="noopener" href="https://github.com/xtutu/egret-demo">https://github.com/xtutu/egret-demo</a></p>
+<blockquote>
+<p>转载本站文章请注明作者(xtutu)和出处 <a href="http://xtutu.github.io/">xtutu</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Render/" rel="tag"># Render</a>
+              <a href="/tags/Draw/" rel="tag"># Draw</a>
+              <a href="/tags/Texture/" rel="tag"># Texture</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/game-wheel-lottery/" rel="prev" title="游戏中转盘抽奖算法实现">
+                  <i class="fa fa-chevron-left"></i> 游戏中转盘抽奖算法实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/add-lua-support-for-cplusplus-project/" rel="next" title="C++项目中添加调用Lua脚本">
+                  C++项目中添加调用Lua脚本 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xtutu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

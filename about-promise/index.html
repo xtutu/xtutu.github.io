@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xtutu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="更新2016-11-XX时隔大半年，JS真的是太强大了，现在都能用 React-Native 来写App了。而Promise也的确是出现在了各种库中，还有本文末提到的async &amp; await也可以在 React-Native 中直接使用。真是太方便了！（文末的吐槽随便看看吧，当时还只是针对NodeJS而言）  前言在NodeJS开发中，各种异步操作是不可避免的（好吧，这句明显是废话…）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Promise又一个异步编程解决方案！">
+<meta property="og:url" content="http://xtutu.github.io/about-promise/index.html">
+<meta property="og:site_name" content="xtutu">
+<meta property="og:description" content="更新2016-11-XX时隔大半年，JS真的是太强大了，现在都能用 React-Native 来写App了。而Promise也的确是出现在了各种库中，还有本文末提到的async &amp; await也可以在 React-Native 中直接使用。真是太方便了！（文末的吐槽随便看看吧，当时还只是针对NodeJS而言）  前言在NodeJS开发中，各种异步操作是不可避免的（好吧，这句明显是废话…）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2016-02-02T11:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-24T08:46:04.927Z">
+<meta property="article:author" content="xtutu">
+<meta property="article:tag" content="Promise">
+<meta property="article:tag" content="Async">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://xtutu.github.io/about-promise/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xtutu.github.io/about-promise/","path":"about-promise/","title":"Promise又一个异步编程解决方案！"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Promise又一个异步编程解决方案！ | xtutu</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="xtutu" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">xtutu</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学习|思考|分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">1.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">2.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.</span> <span class="nav-text">Promise对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%99%E7%A8%8B%E5%9C%B0%E5%9D%80"><span class="nav-number">3.1.</span> <span class="nav-text">教程地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%94%E8%AE%B0"><span class="nav-number">3.2.</span> <span class="nav-text">笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%811"><span class="nav-number">3.2.1.</span> <span class="nav-text">代码1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%812"><span class="nav-number">3.2.2.</span> <span class="nav-text">代码2</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%90%E6%A7%BD"><span class="nav-number">4.</span> <span class="nav-text">吐槽</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xtutu</p>
+  <div class="site-description" itemprop="description">学习|思考|分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xtutu.github.io/about-promise/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xtutu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xtutu">
+      <meta itemprop="description" content="学习|思考|分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Promise又一个异步编程解决方案！ | xtutu">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Promise又一个异步编程解决方案！
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-02-02 19:00:00" itemprop="dateCreated datePublished" datetime="2016-02-02T19:00:00+08:00">2016-02-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-24 16:46:04" itemprop="dateModified" datetime="2023-05-24T16:46:04+08:00">2023-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NodeJS/" itemprop="url" rel="index"><span itemprop="name">NodeJS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><p>2016-11-XX<br>时隔大半年，JS真的是太强大了，现在都能用 React-Native 来写App了。<br>而Promise也的确是出现在了各种库中，还有本文末提到的async &amp; await也可以在 React-Native 中直接使用。<br>真是太方便了！（文末的吐槽随便看看吧，当时还只是针对NodeJS而言）</p>
+<hr>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在NodeJS开发中，各种异步操作是不可避免的（好吧，这句明显是废话…）。<br>开发人员在异步编程上有各种各样的解决方案可以选择。我之前一直用的是: <a target="_blank" rel="noopener" href="https://github.com/caolan/async">Async</a>这个库（star数量已经上万了）。但是，最近看到很多关于Promise的介绍，甚至连ES6里面都内置了这个东西。感觉自己不会用都有点不好意思…</p>
+<span id="more"></span>
+
+<h2 id="Promise对象"><a href="#Promise对象" class="headerlink" title="Promise对象"></a>Promise对象</h2><p>之前其实看过一点Promise相关的内容，但是并不喜欢它处理异步操作的方式（各种Promise对象），所以就一直拖延下去了…<br>现在马上就要过春节了，手头的事情也少了很多，就抽了点时间看了下。</p>
+<h3 id="教程地址"><a href="#教程地址" class="headerlink" title="教程地址"></a>教程地址</h3><p>Promise已经出来有一段时间了，很多公司的技术团队博客里面也都写了不少它的教程：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://efe.baidu.com/blog/promises-anti-pattern/">百度的EFE团队</a></li>
+<li><a target="_blank" rel="noopener" href="http://tech.meituan.com/promise-insight.html">美团的技术团队</a></li>
+</ol>
+<p>所以我也没必要再重复的造轮子了，<strong>这里推荐很不错教程，有点循序渐进的味道：</strong><br><a target="_blank" rel="noopener" href="http://liubin.org/promises-book/">http://liubin.org/promises-book/</a></p>
+<p>看了这篇教程之后，再对比着看看前面两个博客的地址，理解起来会更加全面。</p>
+<h3 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h3><p>附上两段代码。<strong>把这两段代码理清楚，基本使用就完全没问题了。</strong></p>
+<h4 id="代码1"><a href="#代码1" class="headerlink" title="代码1"></a>代码1</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一个简单的Promise</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">asyncFunction</span>(<span class="params"></span>) &#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span> (<span class="params">resolve, reject</span>) &#123;</span><br><span class="line">       <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span>)</span><br><span class="line">       <span class="built_in">setTimeout</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">           <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;3&quot;</span>)</span><br><span class="line">           <span class="title function_">resolve</span>(<span class="string">&#x27;aaa&#x27;</span>);</span><br><span class="line">           <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;4&quot;</span>)</span><br><span class="line">       &#125;, <span class="number">1000</span>);</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span>)</span><br><span class="line"><span class="title function_">asyncFunction</span>().<span class="title function_">then</span>(<span class="keyword">function</span> (<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;5 :&quot;</span> , value);</span><br><span class="line">&#125;).<span class="title function_">catch</span>(<span class="keyword">function</span> (<span class="params">error</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;error :&quot;</span>, error);</span><br><span class="line">&#125;)</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">2</span>)</span><br><span class="line"><span class="comment">/////////输出//////////</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span>  <span class="comment">// 输出2之后，会停顿1秒</span></span><br><span class="line"><span class="comment">// 等待1秒</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">5</span> : aaa</span><br></pre></td></tr></table></figure>
+<p><strong>小结：</strong><br>不管是否提供了then之类的方法，Promise本身都会执行。<br>当调用then方法时，会判断任务是否已经完成了。<br><strong>如果完成了，则根据完成的状态，在本轮“事件循环”（event loop）结束时（见代码2），调用then中对应的回调。</strong><br><strong>否则就把then方法中的回调加到队列中，直到Promise完成（调用resolve or reject），再触发对应的回调。</strong></p>
+<h4 id="代码2"><a href="#代码2" class="headerlink" title="代码2"></a>代码2</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 简易的记录下事件循环处于第几次</span></span><br><span class="line"><span class="keyword">var</span> frame = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">setInterval</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    frame++;</span><br><span class="line">&#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;5 =&gt;&gt;&gt; frame&quot;</span>, frame);</span><br><span class="line">&#125;,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">doubleUp</span>(<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;3 =&gt;&gt;&gt; frame&quot;</span>,frame);</span><br><span class="line">    <span class="keyword">return</span> value * <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">output</span>(<span class="params">value</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;4 =&gt;&gt;&gt; frame&quot;</span>, frame);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span> (<span class="params">resolve, reject</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;1 =&gt;&gt;&gt; frame&quot;</span>, frame)</span><br><span class="line">    <span class="title function_">resolve</span>(<span class="number">100</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">var</span> promise1 = promise.<span class="title function_">then</span>(doubleUp);</span><br><span class="line"><span class="keyword">var</span> promise2 = promise1.<span class="title function_">then</span>(output);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;2 =&gt;&gt;&gt; frame&quot;</span>, frame)</span><br><span class="line"><span class="comment">/////////输出//////////</span></span><br><span class="line"><span class="number">1</span> =&gt;&gt;&gt; frame <span class="number">0</span></span><br><span class="line"><span class="number">2</span> =&gt;&gt;&gt; frame <span class="number">0</span></span><br><span class="line"><span class="number">3</span> =&gt;&gt;&gt; frame <span class="number">0</span></span><br><span class="line"><span class="number">4</span> =&gt;&gt;&gt; frame <span class="number">0</span></span><br><span class="line"><span class="number">5</span> =&gt;&gt;&gt; frame <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p><strong>小结：</strong></p>
+<ul>
+<li><p><strong>then方法中的回调总是是异步进行的。 then接受的参数是函数！如果是其它类型的数据，promise会忽视掉。</strong></p>
+</li>
+<li><p><strong>每个方法中 return 的值不仅只局限于字符串或者数值类型，也可以是对象或者promise对象等复杂类型。</strong><br>return的值会由 Promise.resolve(return的返回值); 进行相应的包装处理，<br>而“Promise.resolve(42)” 则是以下代码的语法糖。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span>(<span class="params">resolve</span>)&#123;</span><br><span class="line">	<span class="title function_">resolve</span>(<span class="number">42</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>catch只是 promise.then(undefined, onRejected) 的别名而已。</strong><br>推荐用用catch来实现异常捕获：promise.then(onFulfilled).catch(onRejected)<br>因为onRejected方法不能捕获同一个then方法中的onFulfilled的异常。</p>
+</li>
+</ul>
+<h2 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h2><p><del>Promise给我的印象，其实并不好，目前应该也不会马上把它用到项目里面来。一方面是因为Async用的非常顺手，而Promise功能非常有限，特别是遍历Promise对象数组的时候。在Async模块中有各种各样的方法：each、series、reduce、parallel…</del><br><del>而用Promise来实现这些功能，就有点复杂了，不过也有第三方库在Promise规范上，添加了不少功能。比如：</del><br><del>1. <strong>bluebird</strong> : <a target="_blank" rel="noopener" href="https://github.com/petkaantonov/bluebird">https://github.com/petkaantonov/bluebird</a></del><br><del>2. <strong>q</strong> : <a target="_blank" rel="noopener" href="https://github.com/kriskowal/q">https://github.com/kriskowal/q</a></del></p>
+<p><del>大家可以选一个看着顺眼的来用。</del><br><del>同时：Promise处理异步操作，最底层就是靠回调函数，但是它硬是搞了一层嵌套，把每一个异步操作都封装为一个Promise对象，淡化回掉的概念。这理解起来就真的没那么顺畅了…</del></p>
+<hr>
+<p>哦，对了。在ES7中支持了async和await关键字，貌似与Promise更配。<br>之后有空，再看看吧。（<strong>这个async和提到的Async模块可不是同一个东西！！！</strong>）</p>
+<blockquote>
+<p>转载本站文章请注明作者(xtutu)和出处 <a href="http://xtutu.github.io/">xtutu</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Promise/" rel="tag"># Promise</a>
+              <a href="/tags/Async/" rel="tag"># Async</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/about-rsa-public-key-private-key/" rel="prev" title="关于RSA、公钥、私钥、加密、签名的那些概念">
+                  <i class="fa fa-chevron-left"></i> 关于RSA、公钥、私钥、加密、签名的那些概念
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/about-human-future/" rel="next" title="走出地球，飞向太空！">
+                  走出地球，飞向太空！ <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xtutu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

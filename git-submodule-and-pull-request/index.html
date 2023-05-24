@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"xtutu.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="实际上submodule 与 pull request，并没有什么直接关系。比如一些团队采用code-review的方式进行协作，那么他们可能只用到pull request。这里之所以放在一起，是因为很多场景用到了其中一个，就少不了另一个。那么，什么情况下我们需要用到 submodule 和 pull request呢？！  假设我们的项目是用git来管理，这时我们需要添加一个第三方库的源码（以下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git submodule &amp; pull request ! 让我们啃下这块骨头！">
+<meta property="og:url" content="http://xtutu.github.io/git-submodule-and-pull-request/index.html">
+<meta property="og:site_name" content="xtutu">
+<meta property="og:description" content="实际上submodule 与 pull request，并没有什么直接关系。比如一些团队采用code-review的方式进行协作，那么他们可能只用到pull request。这里之所以放在一起，是因为很多场景用到了其中一个，就少不了另一个。那么，什么情况下我们需要用到 submodule 和 pull request呢？！  假设我们的项目是用git来管理，这时我们需要添加一个第三方库的源码（以下">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://xtutu.github.io/img/git/1.jpg">
+<meta property="og:image" content="http://xtutu.github.io/img/git/2.jpg">
+<meta property="og:image" content="http://xtutu.github.io/img/git/3.jpg">
+<meta property="og:image" content="http://xtutu.github.io/img/git/5.jpg">
+<meta property="article:published_time" content="2016-12-03T00:30:00.000Z">
+<meta property="article:modified_time" content="2023-05-24T08:46:04.932Z">
+<meta property="article:author" content="xtutu">
+<meta property="article:tag" content="git">
+<meta property="article:tag" content="Submodule">
+<meta property="article:tag" content="pull request">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xtutu.github.io/img/git/1.jpg">
+
+
+<link rel="canonical" href="http://xtutu.github.io/git-submodule-and-pull-request/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://xtutu.github.io/git-submodule-and-pull-request/","path":"git-submodule-and-pull-request/","title":"Git submodule & pull request ! 让我们啃下这块骨头！"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Git submodule & pull request ! 让我们啃下这块骨头！ | xtutu</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="xtutu" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">xtutu</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">学习|思考|分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F1%E2%80%94%E5%8F%AA%E5%A4%8D%E5%88%B6%E6%BA%90%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">方式1—只复制源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F2%E2%80%94submodule-amp-pull-request"><span class="nav-number">2.</span> <span class="nav-text">方式2—submodule &amp; pull request</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#submodule-%E9%83%A8%E5%88%86"><span class="nav-number">2.2.</span> <span class="nav-text">submodule 部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-submodule"><span class="nav-number">2.2.1.</span> <span class="nav-text">添加 submodule</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9submodule%E8%BF%9B%E8%A1%8Cgit%E6%93%8D%E4%BD%9C"><span class="nav-number">2.2.2.</span> <span class="nav-text">对submodule进行git操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E4%B8%80%E4%B8%AA%E5%8C%85%E5%90%ABsubmodule%E7%9A%84%E4%BB%93%E5%BA%93"><span class="nav-number">2.2.3.</span> <span class="nav-text">同步一个包含submodule的仓库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.2.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pull-request-%E9%83%A8%E5%88%86"><span class="nav-number">2.3.</span> <span class="nav-text">pull request 部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pull-request-%E5%A4%A7%E8%87%B4%E6%B5%8F%E8%A7%88"><span class="nav-number">2.3.1.</span> <span class="nav-text">pull request 大致浏览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pull-request%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF"><span class="nav-number">2.3.2.</span> <span class="nav-text">pull request的正确姿势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%E5%AE%98%E6%96%B9%E4%BB%93%E5%BA%93%E7%9A%84%E6%9C%80%E6%96%B0%E4%BF%AE%E6%94%B9"><span class="nav-number">2.3.3.</span> <span class="nav-text">同步官方仓库的最新修改</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-number">2.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%90%8E%E7%9A%84%E6%9C%80%E5%90%8E"><span class="nav-number">3.</span> <span class="nav-text">最后的最后</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">xtutu</p>
+  <div class="site-description" itemprop="description">学习|思考|分享</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://xtutu.github.io/git-submodule-and-pull-request/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="xtutu">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xtutu">
+      <meta itemprop="description" content="学习|思考|分享">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Git submodule & pull request ! 让我们啃下这块骨头！ | xtutu">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git submodule & pull request ! 让我们啃下这块骨头！
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2016-12-03 08:30:00" itemprop="dateCreated datePublished" datetime="2016-12-03T08:30:00+08:00">2016-12-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-05-24 16:46:04" itemprop="dateModified" datetime="2023-05-24T16:46:04+08:00">2023-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%95%BF%E7%9F%A5%E8%AF%86/" itemprop="url" rel="index"><span itemprop="name">长知识</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>实际上submodule 与 pull request，并没有什么直接关系。<br>比如一些团队采用code-review的方式进行协作，那么他们可能只用到pull request。<br>这里之所以放在一起，是因为很多场景用到了其中一个，就少不了另一个。<br><strong>那么，什么情况下我们需要用到 submodule 和 pull request呢？！</strong></p>
+<hr>
+<p>假设我们的项目是用git来管理，这时我们需要添加一个第三方库的源码（以下简称lib），而这个lib，也是通过git来管理。<br>这种情况，一般有两种选择：</p>
+<ol>
+<li><strong>把lib的源码复制到我们的项目中，把它作为当前项目的源码进行管理。</strong></li>
+<li><strong>通过git clone的方式，把lib整个放到我们的项目中（保留它自身的git信息），作为git的submodule。</strong></li>
+</ol>
+<p>这两种方式各有利弊，接下去就来好好分析一下。</p>
+<span id="more"></span>
+
+<hr>
+<h2 id="方式1—只复制源码"><a href="#方式1—只复制源码" class="headerlink" title="方式1—只复制源码"></a>方式1—只复制源码</h2><p>第一种方式对于项目自身的管理来说，非常简单，没有引入额外的概念。<br>如果我们需要修改第三方库的功能，直接改就可以了。<br><strong>但这种方式在以下几种情况，会显得非常糟糕：</strong></p>
+<ol>
+<li><p><strong>更新lib的源码到最新版本</strong><br>如果我们已经在自己的项目仓库对这lib进行了很多修改。<br>然后某一天，lib的官方github发布了许多非常有用的更新，那这时候的合并工作，就必须得借助第三方工具。</p>
+</li>
+<li><p><strong>为lib贡献自己的代码</strong><br>当我们在使用lib时，发现了一个bug，并解决了。我们很难把修复这个bug的commit，告诉官方的github。<br><em>有悖开源的目的。</em></p>
+</li>
+</ol>
+<p><strong>所以接下去，本文将着重介绍方法2的操作方式！！！</strong></p>
+<hr>
+<h2 id="方式2—submodule-amp-pull-request"><a href="#方式2—submodule-amp-pull-request" class="headerlink" title="方式2—submodule &amp; pull request"></a>方式2—submodule &amp; pull request</h2><p>方式1中遇到的问题，通过采用 submodule 就可以很好的解决，但是submodule本身特别绕。<br>所以本文将以我的博客仓库作为案例来分析。</p>
+<h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p><strong>博客主题是一个独立的模块，所以我有以下两个仓库，theme作为blog的submodule来管理。</strong></p>
+<ol>
+<li>我的博客仓库为 xtutu&#x2F;blog.git</li>
+<li>博客的主题仓库 xtutu&#x2F;theme.git &#x3D;&#x3D;&#x3D;&gt; fork from official&#x2F;theme.git</li>
+</ol>
+<p><em>这里可以看到xtutu&#x2F;theme.git 是一个从官方仓库 fork出来的分支！</em><br><em>xtutu&#x2F;blog.git储存在我们自己的git仓库里.（所以仓库的前缀是xtutu&#x2F;）。</em></p>
+<p><strong>如果你对submodule、pull request 都有一定了解，可以直接看2.4的小结内容！！！</strong><br><strong>那里有我目前的操作流程！</strong></p>
+<hr>
+<h3 id="submodule-部分"><a href="#submodule-部分" class="headerlink" title="submodule 部分"></a>submodule 部分</h3><h4 id="添加-submodule"><a href="#添加-submodule" class="headerlink" title="添加 submodule"></a>添加 submodule</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># clone blog仓库到本地</span></span><br><span class="line">$ git <span class="built_in">clone</span> xxxxxxx/blog.git</span><br><span class="line">$ <span class="built_in">cd</span> blog</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在blog仓库下，执行下面这个语句，就会创建一个themes文件夹下，创建一个名为theme的submodule</span></span><br><span class="line">$ git submodule add git@github.com:xtutu/theme.git themes/theme</span><br><span class="line"></span><br><span class="line"><span class="comment"># 看看blog当前的状态</span></span><br><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Your branch is up-to-date with <span class="string">&#x27;origin/master&#x27;</span>.</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use <span class="string">&quot;git reset HEAD &lt;file&gt;...&quot;</span> to unstage)</span><br><span class="line"></span><br><span class="line">        new file:   .gitmodules</span><br><span class="line">        new file:   themes/theme</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提交所有记录</span></span><br><span class="line">$ git commit -am <span class="string">&quot;add submodule theme&quot;</span></span><br><span class="line">$ git push <span class="comment"># 执行完这句命令之后 submodule 就添加完成了</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意！！！</strong><br><strong>blog仓库中的 theme 文件夹下面的内容并没有提交到blog仓库，而是只提交了一个空的theme目录。</strong><br><strong>可以理解为：在blog.git中，只记录了submodule的状态，而不是实际内容！</strong></p>
+<p><img src="/img/git/1.jpg"><br><em>从图中可以看到，blog仓库会记录submodule，对应在theme仓库中的commit id</em></p>
+<hr>
+<h4 id="对submodule进行git操作"><a href="#对submodule进行git操作" class="headerlink" title="对submodule进行git操作"></a>对submodule进行git操作</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Administrator at USER-20160613SI in /f/blog on git:master o [14:18:52]</span></span><br><span class="line">$ <span class="built_in">cd</span> themes/theme</span><br></pre></td></tr></table></figure>
+<p>切换到theme下面之后，执行的各种git操作（包括cmmit、push等），都是只针对 xtutu&#x2F;theme.git进行的。<br>这与普通的git操作并没有什么不同。</p>
+<p><strong>但需要这注意的是：</strong>对theme.git执行了修改操作之后，blog.git会察觉到theme文件夹的commit id发生了变化！<br><strong>所以需要在blog仓库中，进行一次常规的commit，用于提交 submodule 状态修改！</strong></p>
+<hr>
+<h4 id="同步一个包含submodule的仓库"><a href="#同步一个包含submodule的仓库" class="headerlink" title="同步一个包含submodule的仓库"></a>同步一个包含submodule的仓库</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ git clone xxxxxxx/blog.git blog2</span><br><span class="line">$ cd blog2</span><br><span class="line"># 执行完上面这部分之后，虽然创建了themes/theme文件夹，但文件夹里并没有内容...</span><br><span class="line"># 所以我们还需要以下操作：</span><br><span class="line"></span><br><span class="line"># 第一次clone需要进行注册。</span><br><span class="line">$ git submodule init</span><br><span class="line"></span><br><span class="line"># 进行更新</span><br><span class="line">$ git submodule update</span><br><span class="line">### 到这为止，theme下面已经有了具体的内容！</span><br><span class="line">---------------------------------------------</span><br><span class="line"># 以上3条 git 命令，也可以用这句话代替</span><br><span class="line">$ git clone xtutu/blog.git blog2 --recursive</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意！！！</strong><br><strong>默认clone下来的submodule不属于任何branch，处于游离状态，所以一定要记得执行下面的操作！</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Administrator at USER-20160613SI in /f/blog2 on git:master o [14:45:37]</span></span><br><span class="line">$ <span class="built_in">cd</span> themes/theme</span><br><span class="line"></span><br><span class="line"><span class="comment"># Administrator at USER-20160613SI in /f/blog2/themes/theme on git:966eb5d o [14:52:23]</span></span><br><span class="line">$ git branch</span><br><span class="line">* (detached from 966eb5d)</span><br><span class="line">  master</span><br><span class="line"></span><br><span class="line"><span class="comment"># Administrator at USER-20160613SI in /f/blog2/themes/theme on git:966eb5d o [14:52:52]</span></span><br><span class="line">$ git checkout master</span><br><span class="line">Switched to branch <span class="string">&#x27;master&#x27;</span></span><br><span class="line">Your branch is up-to-date with <span class="string">&#x27;origin/master&#x27;</span>.</span><br><span class="line"></span><br><span class="line"><span class="comment"># Administrator at USER-20160613SI in /f/blog2/themes/theme on git:master o [14:54:42]</span></span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+<p>当最后一条命令执行完毕之后，可以在命令行上看到。我们已经进入到了master分支！</p>
+<hr>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>了解了上面这些内容之后，使用submodule应没什么太大问题了。<br>但是方式1提到的两个问题，还是没有涉及到！<br><strong>接下去的内容就是来解决这两个问题。</strong></p>
+<hr>
+<h3 id="pull-request-部分"><a href="#pull-request-部分" class="headerlink" title="pull request 部分"></a>pull request 部分</h3><h4 id="pull-request-大致浏览"><a href="#pull-request-大致浏览" class="headerlink" title="pull request 大致浏览"></a>pull request 大致浏览</h4><p>下面的内容，实际上和submodule已经没有任何关系。<br>pull request &amp; update 等操作，都是针对于 xutut&#x2F;theme.git 以及 official&#x2F;theme.git (原始的官方仓库)。</p>
+<ol>
+<li>进入xtutu&#x2F;theme.git主页，如图所示<br><img src="/img/git/2.jpg"></li>
+<li>点击pull request<br><img src="/img/git/3.jpg"><br>从图中可以看到，当我们点击Create pull request之后，就会把自己仓库的修改提交到official&#x2F;theme.git。<br><em>准确的说：应该是发起一个提交的请求。最后由官方仓库的拥有者，觉得是否接受提交。</em></li>
+</ol>
+<p><strong>但是在这个页面会列出所有的修改，包括不是用于修复这个bug的commit！</strong><br>所以如果我们只是想pull request一个（或者几个）修复bug的commit，而不是所有的commit。那该怎么做呢？！<br><em>我在搜索资料的时候大致看了下，用cherry-pick命令应该可以完成这一效果。不过这里不采用这种方式</em></p>
+<h4 id="pull-request的正确姿势"><a href="#pull-request的正确姿势" class="headerlink" title="pull request的正确姿势"></a>pull request的正确姿势</h4><p><strong>在自己的仓库中，新建一个专门用于修复这个bug的branch。</strong><br>当这个bug修复了之后，我们再通过网页，在这个branch上 pull request！<br>这样pull request里面的commit全都是为了修复这个bug而提交的。</p>
+<p>当然了，不管最后官方仓库，要不要接受这个pull request。<br>我们自己使用的xtutu&#x2F;theme.git master分支，都可以把这个修复bug的分支合并过来！（就是普通的merge操作，相信大家都已经很熟悉了）</p>
+<p><strong>注意事项</strong><br>我们用于pull request的的分支，最好更新到official&#x2F;theme.git的最新状态，<strong>并保持HEAD一致（git rebase &amp; reset命令）！</strong>再进行提交！<br>下面就讲一讲如何从official&#x2F;theme.git 拉取最新的状态。</p>
+<h4 id="同步官方仓库的最新修改"><a href="#同步官方仓库的最新修改" class="headerlink" title="同步官方仓库的最新修改"></a>同步官方仓库的最新修改</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加一个新的远程仓库</span></span><br><span class="line">$ git remote add upstream https://github.com/...../official/theme.git</span><br><span class="line"></span><br><span class="line"><span class="comment"># Administrator at USER-20160613SI in /f/mygit/blog/themes/next on git:master o [16:07:26]</span></span><br><span class="line">$ git remote -v</span><br><span class="line">origin  git@github.com:xtutu/theme.git (fetch)</span><br><span class="line">origin  git@github.com:xtutu/theme.git (push)</span><br><span class="line">upstream        https://github.com/xxxxxxx/theme.git (fetch)</span><br><span class="line">upstream        https://github.com/xxxxxxx/theme.git (push)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置从upstream上拉取数据</span></span><br><span class="line">$ git pull upstream master</span><br><span class="line"><span class="comment"># 推送到自己的 xutut/theme.git 仓库中</span></span><br><span class="line">$ git push</span><br></pre></td></tr></table></figure>
+<p>这里做的就是普通的merge操作，不同之处在于是从一个新的remote上进行merge。</p>
+<h3 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h3><p>我目前的做法是在xtutu&#x2F;theme.git中，一直保存着2个分支。</p>
+<ol>
+<li><p>master：针对自己的需求，进行的所有修改，都会提交到这里<br>比如在现有主题上，更改显示效果，添加自己的信息等。</p>
+</li>
+<li><p>latest-from-upstream： 永远与官方的master保持一致！<br>该分支主要用于<strong>创建</strong> <em>执行pull request操作的</em> <strong>分支</strong>，该分支要保持干净。<br>（<strong>注意：该分支不是为了创建pull reqeust，而是为了创建（执行pull request操作的）分支</strong>）<br>保持干净是为了：在pull request时，避免出现不相干的commit id。</p>
+</li>
+</ol>
+<p><strong>当需要提交一个新的pull request时，可以执行以下操作。</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout latest-from-upstream</span><br><span class="line">$ git pull upstream master <span class="comment"># 同步官方仓库的更新</span></span><br><span class="line">$ git checkout -b new-feature <span class="comment"># 创建用于pull request的分支</span></span><br><span class="line"><span class="comment"># 然后进行各种修改。</span></span><br><span class="line">$ git ......</span><br><span class="line"><span class="comment"># 推到xtutu/theme.git上</span></span><br><span class="line">$ git push origin new-feature</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后通过网页，进行pull request操作。</span></span><br><span class="line"><span class="comment"># 如果我们自己也需要用这个修改，只需要从本地的master分支，merge这个new-feature分支。</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="最后的最后"><a href="#最后的最后" class="headerlink" title="最后的最后"></a>最后的最后</h2><p>写了这么多，大家在用的时候肯定还会遇到不少问题。不过了解了上面这些知识点，再去搜索下，应该可以比较容易的解决。<br>上面的操作流程，也只是我自己摸索出来的方式，如果有更好的建议，可以给我留言，大家一起讨论。</p>
+<p><strong>最后，附上一张截图：这是我采用这种方式，给<a target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">hexo-theme-next</a>提的一个pull request。</strong><br>哈哈哈，成功merge！<br><img src="/img/git/5.jpg"></p>
+<hr>
+<blockquote>
+<p>转载本站文章请注明作者(xtutu)和出处 <a href="http://xtutu.github.io/">xtutu</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/git/" rel="tag"># git</a>
+              <a href="/tags/Submodule/" rel="tag"># Submodule</a>
+              <a href="/tags/pull-request/" rel="tag"># pull request</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/cmd-tools-in-windows/" rel="prev" title="Windows下的命令行工具 —— ConEmu + Babun">
+                  <i class="fa fa-chevron-left"></i> Windows下的命令行工具 —— ConEmu + Babun
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/vr-project-demo/" rel="next" title=" VR项目-Demo完结">
+                   VR项目-Demo完结 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xtutu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

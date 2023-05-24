@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="skins.MainMenuSkin" width="606" height="52" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Button id="factory" label="工厂" x="12" width="62" y="0"/>
+	<e:Button id="barracks" x="94" width="62" label="兵营" y="0"/>
+	<e:Button id="map" width="62" label="地图" y="0" x="172"/>
+	<e:Button id="b4" x="249" width="62" label="按钮" y="0"/>
+	<e:Button id="b5" width="62" label="按钮" y="0" x="333"/>
+	<e:Button id="b6" x="418" width="62" label="按钮" y="0"/>
+	<e:Button id="b7" width="62" label="按钮" y="0" x="500"/>
+</e:Skin>

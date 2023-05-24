@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="skins.LoginViewSkin" width="960" height="640" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Image top="0" bottom="0" left="0" right="0" alpha="1"/>
+	<e:Group id="groupBottom" height="70" bottom="0" left="0" right="0">
+		<e:Button id="backButton" y="8" width="65" label="返回" height="50" right="11"/>
+	</e:Group>
+	<e:Button id="initButton" label="init" x="141" y="248"/>
+	<e:Button id="loginButton" label="login" x="308" y="252"/>
+	<e:Button id="payButton" label="pay" x="484" y="250"/>
+	<e:Label x="95" y="59" size="24"/>
+</e:Skin>

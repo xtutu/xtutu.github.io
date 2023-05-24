@@ -1,0 +1,20 @@
+{
+	"groups":[
+		{
+			"keys" : "pointer,panel_back_png",
+			"name": "preload"
+		}
+	],
+	"resources":[
+		{
+			"name":"pointer",
+			"type":"image",
+			"url":"assets/pic/pointer.jpg"
+		},
+		{
+			"name":"panel_back_png",
+			"type":"image",
+			"url":"assets/pic/Panel_back.png"
+		}
+	]
+}

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="skins.RoleInfoSkin" width="374" height="44" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Label id="att1" text="标签" x="14" y="12" size="20"/>
+	<e:Label id="att2" y="13" size="20" text="标签" x="67"/>
+	<e:Label id="att3" y="13" size="20" text="标签" x="127"/>
+	<e:Label id="att4" y="13" size="20" text="标签" x="190"/>
+	<e:Label id="att5" y="13" size="20" text="标签" x="249"/>
+	<e:Button id="button" label="按钮" x="305" y="6" width="64" height="34"/>
+</e:Skin>

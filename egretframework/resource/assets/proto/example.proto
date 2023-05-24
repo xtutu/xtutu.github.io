@@ -1,0 +1,21 @@
+message Car {
+    required string text = 100;
+    required bool a1 = 1;
+    required int64 a2 = 2;
+    required int32 a3 = 3;
+    required float a4 = 4;
+    required double a5 = 5;
+    required string a6 = 6;
+    option code = 6003;
+}
+
+message Book {
+    required string text = 100;
+    required bool a1 = 1;
+    required int64 a2 = 2;
+    required int32 a3 = 3;
+    required float a4 = 4;
+    required double a5 = 5;
+    required string a6 = 6;
+    option code = 1234;
+}

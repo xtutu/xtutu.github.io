@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="skins.OkTipsSkin" minHeight="230" minWidth="450" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+    <e:Image left="0" right="0" bottom="0"  top="0" scale9Grid="2,2,12,12"  source="border_png"/>
+    <e:Group id="moveArea" left="0" right="0" top="0" height="45">
+        <e:Image left="0" right="0" bottom="0"  top="0" source="header_png"/>
+        <e:Label id="titleLabel" size="24" fontFamily="Tahoma" textColor="0xFFFFFF"
+                 wordWrap="false" text="提示" textAlign="center" verticalCenter="0" horizontalCenter="0"/>
+    </e:Group>
+	<e:Label id="contentLabel" text="我是内容。。。。。。事实上啊的" x="14" y="55" textColor="0x000000" maxWidth="420" size="24"/>
+	<e:Button id="okButton" label="确定" horizontalCenter="0" verticalCenter="81"/>
+</e:Skin>

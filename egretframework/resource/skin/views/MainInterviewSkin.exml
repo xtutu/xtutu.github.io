@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="skins.MainIntervViewSkin" width="960" height="640" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Image top="0" bottom="0" left="0" right="0" alpha="1"/>
+	<e:Group height="59" left="0" top="0" right="0">
+		<e:Image id="iconLabel" height="52" width="56" source="avatar_jpg" x="3" y="3"/>
+		<e:Label id="nameLabel" text="标签" size="22" x="76" y="2"/>
+		<e:Label id="generationLabel" text="标签" size="22" x="76" y="31"/>
+		<e:Label id="goldLabel" text="标签" x="200" y="4" size="22"/>
+		<e:Label id="diamondLabel" text="标签" x="382" y="15" size="20"/>
+		<e:Button id="buyDiamondButton" label="Buy" x="319" y="4" width="60" height="44"/>
+		<e:Button id="testButton" label="测试界面" right="10" verticalCenter="4.5"/>
+	</e:Group>
+	<e:Group height="491" width="960" verticalCenter="0" horizontalCenter="0">
+		<e:Group id="groupLeft" height="426" width="407" x="24" y="23">
+			<e:Button label="按钮" x="28" y="16"/>
+			<e:Button label="按钮" x="201" y="15"/>
+			<e:ProgressBar id="progressLeft" x="47" y="71" width="240" height="15"/>
+		</e:Group>
+		<e:Group id="groupRight" width="407" y="28" height="426" x="502">
+			<e:Button y="13" label="按钮" x="131"/>
+			<e:Button y="11" label="按钮" x="264"/>
+		</e:Group>
+	</e:Group>
+	<e:Group id="groupBottom" height="70" bottom="0" left="0" right="0">
+		<e:Button id="menuButton" label="&gt;" x="18" y="11" width="65" height="50"/>
+		<e:Button id="backButton" y="8" width="65" label="返回" height="50" right="11"/>
+	</e:Group>
+</e:Skin>

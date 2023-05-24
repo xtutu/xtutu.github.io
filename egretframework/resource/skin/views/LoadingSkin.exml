@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<e:Skin class="skins.LoadingSkin" width="786" height="494" currentState="s1" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*"  >
+	<e:Button id="popPanelButton" label="弹出框" left="22" top="11"/>
+	<e:Button label="左下" bottom="15" left="22"/>
+	<e:Button label="右下" right="14" bottom="10"/>
+	<e:Button id="loginButton" label="右上" right="20" top="12"/>
+	<e:Label id="progressLabel" text="标签" horizontalCenter="-6" verticalCenter="-2" size="26"/>
+	<e:Image height="96" width="103" horizontalCenter="-0.5" verticalCenter="67" source="avatar_jpg"/>
+	<e:Button id="startButton" label="进入" horizontalCenter="-1" verticalCenter="-58"/>
+	<e:Button id="connectButton" horizontalCenter="-150" label="连接服务器" verticalCenter="-148" x="10" y="10"/>
+	<e:Button id="sendButton" horizontalCenter="130" y="20" verticalCenter="-151" label="发送消息" x="20"/>
+</e:Skin>
